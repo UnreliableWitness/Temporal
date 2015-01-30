@@ -8,6 +8,7 @@ namespace Temporal.Tests.Fakes
     {
         Task<IEnumerable<Person>> RetrievePersonsAsync();
         IEnumerable<Person> RetrievePersons();
+        IEnumerable<Person> RetrievePersonsNoCache();
         Person RetrievePerson(int id);
         Person RetrievePerson(Person person);
         Person RetrievePerson(Person person, int i);

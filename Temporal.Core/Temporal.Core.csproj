@@ -43,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\CacheAttribute.cs" />
+    <Compile Include="Attributes\CacheAttributeInterpreter.cs" />
+    <Compile Include="Attributes\DontCacheAttribute.cs" />
+    <Compile Include="Attributes\ICacheAttributeInterpreter.cs" />
     <Compile Include="CacheContainer.cs" />
     <Compile Include="CacheKeyGenerator.cs" />
     <Compile Include="Interceptors\DefaultCacheInterceptor.cs" />

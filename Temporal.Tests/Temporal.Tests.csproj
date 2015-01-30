@@ -59,6 +59,7 @@
     <Compile Include="Fakes\FakeException.cs" />
     <Compile Include="Fakes\ITestRepository.cs" />
     <Compile Include="Fakes\TestRepository.cs" />
+    <Compile Include="InterceptorTests.cs" />
     <Compile Include="Mocks\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RepositoryDecoratorTests.cs" />

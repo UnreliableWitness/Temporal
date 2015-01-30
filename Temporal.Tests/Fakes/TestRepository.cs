@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Temporal.Core.Attributes;
 using Temporal.Tests.Mocks;
 
 namespace Temporal.Tests.Fakes
@@ -11,14 +12,22 @@ namespace Temporal.Tests.Fakes
             return await Task.FromResult(RetrievePersons());
         }
 
-        public virtual IEnumerable<Person> RetrievePersons()
+        public IEnumerable<Person> RetrievePersons()
         {
             var result = new List<Person>();
             result.Add(new Person { First = "Dries" });
             return result;
         }
 
-        public virtual Person RetrievePerson(int id)
+        [DontCache]
+        public IEnumerable<Person> RetrievePersonsNoCache()
+        {
+            var result = new List<Person>();
+            result.Add(new Person { First = "Dries" });
+            return result;
+        }
+
+        public Person RetrievePerson(int id)
         {
             return new Person
             {
