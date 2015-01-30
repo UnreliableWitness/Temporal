@@ -1,4 +1,6 @@
-﻿using Castle.DynamicProxy;
+﻿using System.Collections.Generic;
+using Castle.DynamicProxy;
+using Temporal.Core.Conventions;
 using Temporal.Core.Interceptors;
 
 namespace Temporal.Core
@@ -8,9 +10,16 @@ namespace Temporal.Core
         private readonly ProxyGenerator _proxyGenerator;
         private readonly ICacheInterceptor _cacheInterceptor;
 
-        public RepositoryDecorator() : this(new DefaultCacheInterceptor())
+        private readonly ConventionsFluentInterface _conventions;
+
+        internal List<ICacheConvention> RegisteredConventions;
+
+        public ConventionsFluentInterface Conventions { get { return _conventions; } }
+
+        public RepositoryDecorator() : this(new DefaultCacheInterceptor(new CacheProvider()))
         {
             _proxyGenerator = new ProxyGenerator();
+            _conventions = new ConventionsFluentInterface(this);
         }
 
         public RepositoryDecorator(ICacheInterceptor cacheInterceptor)
@@ -21,8 +30,12 @@ namespace Temporal.Core
 
         public T Decorate<T>(T target) where T : class
         {
-            var decoratedRepo = _proxyGenerator.CreateInterfaceProxyWithTarget<T>(target, _cacheInterceptor);
+            var decoratedRepo = _proxyGenerator.CreateInterfaceProxyWithTarget(target, _cacheInterceptor);
             return decoratedRepo;
         }
+
+        
     }
+
+
 }

@@ -49,6 +49,12 @@
     <Compile Include="Attributes\ICacheAttributeInterpreter.cs" />
     <Compile Include="CacheContainer.cs" />
     <Compile Include="CacheKeyGenerator.cs" />
+    <Compile Include="CacheProvider.cs" />
+    <Compile Include="Conventions\ConventionsFluentInterface.cs" />
+    <Compile Include="Conventions\DefaultConvention.cs" />
+    <Compile Include="Conventions\ICacheConvention.cs" />
+    <Compile Include="ICacheContainer.cs" />
+    <Compile Include="ICacheProvider.cs" />
     <Compile Include="Interceptors\DefaultCacheInterceptor.cs" />
     <Compile Include="Events\ItemAddedEventArgs.cs" />
     <Compile Include="Events\ItemEvictedEventArgs.cs" />

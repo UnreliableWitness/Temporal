@@ -28,7 +28,7 @@ namespace Temporal.Tests
         public void RepositoryMethodShouldBeIntercepted()
         {
             var decorator = new RepositoryDecorator(new FakeCacheInterceptor());
-
+            
             var repo = new TestRepository();
             var decoRepo = decorator.Decorate<ITestRepository>(repo);
             var x = decoRepo.RetrievePersons();

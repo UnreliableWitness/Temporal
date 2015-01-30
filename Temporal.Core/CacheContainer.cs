@@ -9,7 +9,7 @@ namespace Temporal.Core
     public delegate void ItemUpdatedEventHandler(object sender, ItemUpdatedEventArgs e);
     public delegate void ItemEvictedEventHandler(object sender, ItemEvictedEventArgs e);
 
-    public class CacheContainer
+    public class CacheContainer : ICacheContainer
     {
         private readonly ObjectCache _cache;
 

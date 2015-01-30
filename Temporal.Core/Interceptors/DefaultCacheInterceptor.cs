@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Temporal.Core.Attributes;
@@ -11,11 +10,13 @@ namespace Temporal.Core.Interceptors
     {
         private readonly Dictionary<MethodInfo, IEnumerable<CacheAttribute>> _cacheAttributes;
         private readonly ICacheAttributeInterpreter _cacheAttributeInterpreter;
+        private readonly ICacheProvider _cacheProvider;
 
-        public DefaultCacheInterceptor()
+        public DefaultCacheInterceptor(ICacheProvider cacheProvider)
         {
             _cacheAttributes = new Dictionary<MethodInfo, IEnumerable<CacheAttribute>>();
             _cacheAttributeInterpreter = new CacheAttributeInterpreter();
+            _cacheProvider = cacheProvider;
         }
 
         public void Intercept(IInvocation invocation)
@@ -23,7 +24,11 @@ namespace Temporal.Core.Interceptors
             var attributes = GetCustomAttributes(invocation.MethodInvocationTarget);
 
             if(_cacheAttributeInterpreter.UseCache(attributes))
+                _cacheProvider.Handle(invocation);
+            else
+            {
                 invocation.Proceed();
+            }
         }
 
         private IEnumerable<CacheAttribute> GetCustomAttributes(MethodInfo method)

@@ -2,12 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 
 namespace Temporal.Core
 {
     public class CacheKeyGenerator
     {
+        public bool TryBuildCacheKey(MethodInfo method, IEnumerable<object> arguments, out string cacheKey)
+        {
+            var methodName = method.Name;
+
+            string tempCacheKey;
+            var result = TryBuildCacheKey(methodName, arguments, out tempCacheKey);
+            cacheKey = tempCacheKey;
+            return result;
+        }
+
         public bool TryBuildCacheKey(Expression<Action> method, out string cacheKey)
         {
              var methodCallExp = (MethodCallExpression) method.Body;
@@ -18,6 +29,14 @@ namespace Temporal.Core
                              select Expression.Lambda<Func<object>>(argAsObj, null)
                                               .Compile()();
 
+            string tempCacheKey;
+            var result = TryBuildCacheKey(methodName, arguments, out tempCacheKey);
+            cacheKey = tempCacheKey;
+            return result;
+        }
+
+        private bool TryBuildCacheKey(string methodName, IEnumerable<object> arguments, out string cacheKey)
+        {
             var sb = new StringBuilder();
             foreach (var argument in arguments)
             {
