@@ -9,7 +9,7 @@
             _repositoryDecorator = repositoryDecorator;
         }
 
-        public ConventionsFluentInterface Register(ICacheConvention convention)
+        public ConventionsFluentInterface Register(CacheConvention convention)
         {
             _repositoryDecorator.RegisteredConventions.Add(convention);
             return this;

@@ -12,7 +12,7 @@ namespace Temporal.Core
 
         private readonly ConventionsFluentInterface _conventions;
 
-        internal List<ICacheConvention> RegisteredConventions;
+        internal List<CacheConvention> RegisteredConventions;
 
         public ConventionsFluentInterface Conventions { get { return _conventions; } }
 

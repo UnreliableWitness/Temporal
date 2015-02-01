@@ -52,7 +52,7 @@
     <Compile Include="CacheProvider.cs" />
     <Compile Include="Conventions\ConventionsFluentInterface.cs" />
     <Compile Include="Conventions\DefaultConvention.cs" />
-    <Compile Include="Conventions\ICacheConvention.cs" />
+    <Compile Include="Conventions\CacheConvention.cs" />
     <Compile Include="ICacheContainer.cs" />
     <Compile Include="ICacheProvider.cs" />
     <Compile Include="Interceptors\DefaultCacheInterceptor.cs" />

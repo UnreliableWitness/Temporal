@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Temporal.Core.Conventions
 {
-    public class DefaultConvention : ICacheConvention
+    public class DefaultConvention : CacheConvention
     {
     }
 }

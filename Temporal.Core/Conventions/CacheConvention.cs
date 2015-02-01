@@ -1,6 +1,6 @@
 ﻿namespace Temporal.Core.Conventions
 {
-    public interface ICacheConvention
+    public abstract class CacheConvention
     {
     }
 }
