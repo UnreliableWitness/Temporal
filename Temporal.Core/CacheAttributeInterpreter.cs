@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
+using Temporal.Core.Attributes;
 using Temporal.Core.Conventions;
+using Temporal.Core.Conventions.CachingConventions;
 
-namespace Temporal.Core.Attributes
+namespace Temporal.Core
 {
     public class CacheAttributeInterpreter : ICacheAttributeInterpreter
     {
@@ -22,6 +24,9 @@ namespace Temporal.Core.Attributes
 
         public bool UseCache(IInvocation invocation)
         {
+            if (!HasReturnValue(invocation))
+                return false;
+
             var shouldCache = AttributesAllowCache(invocation);
             if (!shouldCache)
                 return false;
@@ -29,6 +34,11 @@ namespace Temporal.Core.Attributes
             shouldCache = ConventionsAllowCache(Conventions, invocation);
 
             return shouldCache;
+        }
+
+        private bool HasReturnValue(IInvocation invocation)
+        {
+            return (invocation.MethodInvocationTarget.ReturnType != typeof (void));
         }
 
         private bool ConventionsAllowCache(IEnumerable<ICacheConvention> cacheConventions, IInvocation invocation)

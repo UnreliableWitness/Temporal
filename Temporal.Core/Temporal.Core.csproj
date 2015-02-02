@@ -44,15 +44,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\CacheAttribute.cs" />
-    <Compile Include="Attributes\CacheAttributeInterpreter.cs" />
+    <Compile Include="CacheAttributeInterpreter.cs" />
     <Compile Include="Attributes\DontCacheAttribute.cs" />
-    <Compile Include="Attributes\ICacheAttributeInterpreter.cs" />
+    <Compile Include="Conventions\InvalidationConventions\IInvalidateConvention.cs" />
+    <Compile Include="Conventions\InvalidationConventions\InvalidationConventionsFluentInterface.cs" />
+    <Compile Include="ICacheAttributeInterpreter.cs" />
+    <Compile Include="Attributes\Invalidation\InvalidationAttribute.cs" />
+    <Compile Include="Attributes\Invalidation\InvalidationSourceAttribute.cs" />
+    <Compile Include="Attributes\Invalidation\InvalidationTargetAttribute.cs" />
     <Compile Include="CacheContainer.cs" />
     <Compile Include="CacheKeyGenerator.cs" />
     <Compile Include="CacheProvider.cs" />
-    <Compile Include="Conventions\ConventionsFluentInterface.cs" />
-    <Compile Include="Conventions\DefaultConvention.cs" />
-    <Compile Include="Conventions\CacheConvention.cs" />
+    <Compile Include="Conventions\CachingConventions\CachingConventionsFluentInterface.cs" />
+    <Compile Include="Conventions\CachingConventions\DefaultCachingConvention.cs" />
+    <Compile Include="Conventions\CachingConventions\ICacheConvention.cs" />
+    <Compile Include="Exceptions\ConventionAlreadyRegisteredException.cs" />
     <Compile Include="ICacheContainer.cs" />
     <Compile Include="ICacheProvider.cs" />
     <Compile Include="Interceptors\DefaultCacheInterceptor.cs" />
@@ -67,6 +73,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

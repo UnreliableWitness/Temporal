@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Castle.DynamicProxy;
-using Temporal.Core;
-using Temporal.Core.Conventions;
+﻿using Castle.DynamicProxy;
+using Temporal.Core.Conventions.CachingConventions;
 using Temporal.Core.Interceptors;
 
 namespace Temporal.Tests.Fakes

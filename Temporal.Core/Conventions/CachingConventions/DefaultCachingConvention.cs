@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 
-namespace Temporal.Core.Conventions
+namespace Temporal.Core.Conventions.CachingConventions
 {
-    public class DefaultConvention : ICacheConvention
+    public class DefaultCachingConvention : ICacheConvention
     {
 
         public bool ShouldCache(MethodInfo methodInfo)

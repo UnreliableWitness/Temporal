@@ -2,7 +2,8 @@
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Temporal.Core;
-using Temporal.Core.Conventions;
+using Temporal.Core.Conventions.CachingConventions;
+using Temporal.Core.Exceptions;
 using Temporal.Tests.Fakes;
 
 namespace Temporal.Tests
@@ -28,7 +29,6 @@ namespace Temporal.Tests
         public void DefaultConventionsShouldAllowCache()
         {
             var decorator = new RepositoryDecorator();
-            decorator.Conventions.Register(new DefaultConvention());
 
             var repo = new TestRepository();
             var decoRepo = decorator.Decorate<ITestRepository>(repo);
@@ -43,8 +43,7 @@ namespace Temporal.Tests
         public void ExtraConventionsShouldAllowCache()
         {
             var decorator = new RepositoryDecorator();
-            decorator.Conventions.Register(new DefaultConvention());
-            decorator.Conventions.Register(new TestConvention());
+            decorator.CacheIf.AddCondition(new TestConvention());
 
             var repo = new TestRepository();
             var decoRepo = decorator.Decorate<ITestRepository>(repo);
@@ -53,6 +52,21 @@ namespace Temporal.Tests
             var personsB = decoRepo.SelectPersons();
 
             Assert.AreEqual(personsA, personsB);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ConventionAlreadyRegisteredException))]
+        public void DoubleConventionRegistrationShouldThrowException()
+        {
+            var decorator = new RepositoryDecorator();
+            decorator.CacheIf.AddCondition(new DefaultCachingConvention());
+        }
+
+        [TestMethod]
+        public void InvalidationConventionShouldBeAbleToBeConfigured()
+        {
+            var decorator = new RepositoryDecorator();
+            decorator.InvalidateOn.MethodInvocation().TimeElapsed().MaxCountReached(100);
         }
     }
 

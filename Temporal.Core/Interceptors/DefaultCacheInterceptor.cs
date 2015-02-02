@@ -1,6 +1,8 @@
-﻿using Castle.DynamicProxy;
-using Temporal.Core.Attributes;
+﻿using System.Linq;
+using Castle.DynamicProxy;
 using Temporal.Core.Conventions;
+using Temporal.Core.Conventions.CachingConventions;
+using Temporal.Core.Exceptions;
 
 namespace Temporal.Core.Interceptors
 {
@@ -27,6 +29,9 @@ namespace Temporal.Core.Interceptors
 
         public void AddConvention(ICacheConvention convention)
         {
+            if(_cacheAttributeInterpreter.Conventions.Any(c=>c.GetType()==convention.GetType()))
+                throw new ConventionAlreadyRegisteredException(convention.GetType());
+
             _cacheAttributeInterpreter.Conventions.Add(convention);
         }
 
@@ -35,4 +40,5 @@ namespace Temporal.Core.Interceptors
             _cacheAttributeInterpreter.Conventions.Clear();
         }
     }
+
 }

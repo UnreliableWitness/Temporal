@@ -17,9 +17,7 @@ namespace Temporal.Core
         public event ItemAddedEventHandler ItemAdded;
         public event ItemUpdatedEventHandler ItemUpdated;
         public event ItemEvictedEventHandler ItemEvicted;
-
-        public string[] MethodsThatInvalidateStartWith { get; set; }
-
+        
         public CacheContainer()
         {
             CacheKeyGenerator = new CacheKeyGenerator();

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Castle.DynamicProxy;
-using Temporal.Core.Conventions;
+﻿using Castle.DynamicProxy;
+using Temporal.Core.Conventions.CachingConventions;
+using Temporal.Core.Conventions.InvalidationConventions;
 using Temporal.Core.Interceptors;
 
 namespace Temporal.Core
@@ -10,9 +10,11 @@ namespace Temporal.Core
         private readonly ProxyGenerator _proxyGenerator;
         public ICacheInterceptor CacheInterceptor { get; set; }
 
-        private readonly ConventionsFluentInterface _conventions;
-        
-        public ConventionsFluentInterface Conventions { get { return _conventions; } }
+        private readonly CachingConventionsFluentInterface _cachingConventions;
+        public CachingConventionsFluentInterface CacheIf { get { return _cachingConventions; } }
+
+        private readonly InvalidationConventionsFluentInterface _invalidationConventions;
+        public InvalidationConventionsFluentInterface InvalidateOn { get { return _invalidationConventions; } }
 
         public RepositoryDecorator()
         {
@@ -21,7 +23,8 @@ namespace Temporal.Core
             CacheInterceptor = new DefaultCacheInterceptor(cacheProvider);
 
             _proxyGenerator = new ProxyGenerator();
-            _conventions = new ConventionsFluentInterface(this);
+            _cachingConventions = new CachingConventionsFluentInterface(this);
+            _invalidationConventions = new InvalidationConventionsFluentInterface(this);
         }
 
         public RepositoryDecorator(ICacheInterceptor cacheInterceptor)

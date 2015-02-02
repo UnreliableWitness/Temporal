@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Temporal.Core.Attributes;
+using Temporal.Core.Attributes.Invalidation;
 using Temporal.Tests.Mocks;
 
 namespace Temporal.Tests.Fakes
@@ -56,6 +57,17 @@ namespace Temporal.Tests.Fakes
             var result = new List<Person>();
             result.Add(new Person { First = "Dries" });
             return result;
+        }
+
+        [InvalidationSource()]
+        public byte[] UpdatePerson(Person person)
+        {
+            return new byte[] {};
+        }
+
+        public async Task<byte[]> UpdatePersonAsync(Person person)
+        {
+            return await Task.FromResult(new byte[] {});
         }
     }
 }
