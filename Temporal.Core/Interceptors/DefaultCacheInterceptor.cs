@@ -1,29 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Castle.DynamicProxy;
+﻿using Castle.DynamicProxy;
 using Temporal.Core.Attributes;
+using Temporal.Core.Conventions;
 
 namespace Temporal.Core.Interceptors
 {
     public class DefaultCacheInterceptor : ICacheInterceptor
     {
-        private readonly Dictionary<MethodInfo, IEnumerable<CacheAttribute>> _cacheAttributes;
         private readonly ICacheAttributeInterpreter _cacheAttributeInterpreter;
         private readonly ICacheProvider _cacheProvider;
-
+        
         public DefaultCacheInterceptor(ICacheProvider cacheProvider)
         {
-            _cacheAttributes = new Dictionary<MethodInfo, IEnumerable<CacheAttribute>>();
             _cacheAttributeInterpreter = new CacheAttributeInterpreter();
             _cacheProvider = cacheProvider;
         }
 
         public void Intercept(IInvocation invocation)
         {
-            var attributes = GetCustomAttributes(invocation.MethodInvocationTarget);
-
-            if(_cacheAttributeInterpreter.UseCache(attributes))
+            if(_cacheAttributeInterpreter.UseCache(invocation))
                 _cacheProvider.Handle(invocation);
             else
             {
@@ -31,14 +25,14 @@ namespace Temporal.Core.Interceptors
             }
         }
 
-        private IEnumerable<CacheAttribute> GetCustomAttributes(MethodInfo method)
+        public void AddConvention(ICacheConvention convention)
         {
-            if (_cacheAttributes.ContainsKey(method))
-                return _cacheAttributes[method];
+            _cacheAttributeInterpreter.Conventions.Add(convention);
+        }
 
-            var attributes = Attribute.GetCustomAttributes(method, typeof (CacheAttribute), true); //method.GetCustomAttributes(typeof(CacheAttribute), true);
-            _cacheAttributes.Add(method, attributes as CacheAttribute[]);
-            return attributes as CacheAttribute[];
+        public void ClearConventions()
+        {
+            _cacheAttributeInterpreter.Conventions.Clear();
         }
     }
 }

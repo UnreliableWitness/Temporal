@@ -1,6 +1,9 @@
-﻿namespace Temporal.Core.Conventions
+﻿using System.Reflection;
+
+namespace Temporal.Core.Conventions
 {
-    public abstract class CacheConvention
+    public interface ICacheConvention
     {
+        bool ShouldCache(MethodInfo methodInfo);
     }
 }

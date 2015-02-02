@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Temporal.Tests.Mocks;
 
@@ -12,5 +13,6 @@ namespace Temporal.Tests.Fakes
         Person RetrievePerson(int id);
         Person RetrievePerson(Person person);
         Person RetrievePerson(Person person, int i);
+        IEnumerable<Person> SelectPersons();
     }
 }

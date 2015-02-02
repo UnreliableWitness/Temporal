@@ -23,11 +23,10 @@ namespace Temporal.Core
             var returnType = invocation.Method.ReturnType;
             if (returnType != typeof (void))
             {
-                string cacheKey = string.Empty;
-                if (_cacheContainer.CacheKeyGenerator.TryBuildCacheKey(invocation.Method, invocation.Arguments,
+                string cacheKey;
+                if (_cacheContainer != null && _cacheContainer.CacheKeyGenerator.TryBuildCacheKey(invocation.Method, invocation.Arguments,
                     out cacheKey))
                 {
-                    _cacheContainer.InvalidateIfNeeded(cacheKey);
                     object result;
                     if (_cacheContainer.TryGet(cacheKey, out result))
                     {
@@ -44,6 +43,10 @@ namespace Temporal.Core
                             {
                                 _cacheContainer.TryAdd(cacheKey, returnValue, TimeSpan.FromMinutes(10));
                             });
+                        }
+                        else
+                        {
+                            _cacheContainer.TryAdd(cacheKey, returnValue, TimeSpan.FromMinutes(10));
                         }
                     }
                 }

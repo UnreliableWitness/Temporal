@@ -50,5 +50,12 @@ namespace Temporal.Tests.Fakes
                 First = "Dries"
             };
         }
+
+        public IEnumerable<Person> SelectPersons()
+        {
+            var result = new List<Person>();
+            result.Add(new Person { First = "Dries" });
+            return result;
+        }
     }
 }

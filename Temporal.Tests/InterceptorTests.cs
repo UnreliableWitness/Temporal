@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Temporal.Core;
+using Temporal.Core.Conventions;
 using Temporal.Tests.Fakes;
 
 namespace Temporal.Tests
@@ -23,10 +25,10 @@ namespace Temporal.Tests
         }
 
         [TestMethod]
-        public void RetrieveShouldBeCached()
+        public void DefaultConventionsShouldAllowCache()
         {
             var decorator = new RepositoryDecorator();
-            decorator.Conventions.Register()
+            decorator.Conventions.Register(new DefaultConvention());
 
             var repo = new TestRepository();
             var decoRepo = decorator.Decorate<ITestRepository>(repo);
@@ -34,7 +36,31 @@ namespace Temporal.Tests
             var personsA = decoRepo.RetrievePersons();
             var personsB = decoRepo.RetrievePersons();
 
-            Assert.IsTrue(true);
+            Assert.AreEqual(personsA, personsB);
+        }
+
+        [TestMethod]
+        public void ExtraConventionsShouldAllowCache()
+        {
+            var decorator = new RepositoryDecorator();
+            decorator.Conventions.Register(new DefaultConvention());
+            decorator.Conventions.Register(new TestConvention());
+
+            var repo = new TestRepository();
+            var decoRepo = decorator.Decorate<ITestRepository>(repo);
+
+            var personsA = decoRepo.SelectPersons();
+            var personsB = decoRepo.SelectPersons();
+
+            Assert.AreEqual(personsA, personsB);
+        }
+    }
+
+    public class TestConvention : ICacheConvention
+    {
+        public bool ShouldCache(MethodInfo methodInfo)
+        {
+            return methodInfo.Name.StartsWith("Select");
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Runtime.Caching;
 using Temporal.Core.Events;
 
@@ -19,7 +18,6 @@ namespace Temporal.Core
         public event ItemUpdatedEventHandler ItemUpdated;
         public event ItemEvictedEventHandler ItemEvicted;
 
-        public string[] MethodsToCacheStartWith { get; set; }
         public string[] MethodsThatInvalidateStartWith { get; set; }
 
         public CacheContainer()
@@ -30,9 +28,6 @@ namespace Temporal.Core
 
         public bool TryAdd(string key, object toCache, TimeSpan expiration)
         {
-            if (!AllowCache(key))
-                return false;
-
             if (string.IsNullOrEmpty(key) || toCache == null)
                 return false;
             if (_cache[key] != null)
@@ -59,19 +54,6 @@ namespace Temporal.Core
             return true;
         }
 
-        private bool AllowCache(string key)
-        {
-            if (MethodsToCacheStartWith == null || MethodsToCacheStartWith.Length == 0)
-                return false;
-
-            foreach (var s in MethodsToCacheStartWith)
-            {
-                if (key.StartsWith(s))
-                    return true;
-            }
-            return false;
-        }
-
         public bool TryGet(string key, out object returnValue)
         {
             if (string.IsNullOrEmpty(key))
@@ -84,23 +66,6 @@ namespace Temporal.Core
             if (returnValue == null)
                 return false;
             return true;
-        }
-
-        public void InvalidateIfNeeded(string cacheKey)
-        {
-            foreach (var s in MethodsThatInvalidateStartWith)
-            {
-                if (cacheKey.StartsWith(s))
-                {
-                    var allKeys = _cache.Select(o => o.Key);
-                    //Parallel.ForEach(allKeys, key => _cache.Remove(key));
-                    foreach (var allKey in allKeys)
-                    {
-                        _cache.Remove(allKey);
-                    }
-                    return;
-                }
-            }
         }
     }
 }

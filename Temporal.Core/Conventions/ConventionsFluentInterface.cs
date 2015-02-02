@@ -9,15 +9,15 @@
             _repositoryDecorator = repositoryDecorator;
         }
 
-        public ConventionsFluentInterface Register(CacheConvention convention)
+        public ConventionsFluentInterface Register(ICacheConvention convention)
         {
-            _repositoryDecorator.RegisteredConventions.Add(convention);
+            _repositoryDecorator.CacheInterceptor.AddConvention(convention);
             return this;
         }
 
         public ConventionsFluentInterface Clear()
         {
-            _repositoryDecorator.RegisteredConventions.Clear();
+            _repositoryDecorator.CacheInterceptor.ClearConventions();
             return this;
         }
     }

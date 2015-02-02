@@ -8,16 +8,18 @@ namespace Temporal.Core
     public sealed class RepositoryDecorator
     {
         private readonly ProxyGenerator _proxyGenerator;
-        private readonly ICacheInterceptor _cacheInterceptor;
+        public ICacheInterceptor CacheInterceptor { get; set; }
 
         private readonly ConventionsFluentInterface _conventions;
-
-        internal List<CacheConvention> RegisteredConventions;
-
+        
         public ConventionsFluentInterface Conventions { get { return _conventions; } }
 
-        public RepositoryDecorator() : this(new DefaultCacheInterceptor(new CacheProvider()))
+        public RepositoryDecorator()
         {
+            var cacheContainer = new CacheContainer();
+            var cacheProvider = new CacheProvider(cacheContainer);
+            CacheInterceptor = new DefaultCacheInterceptor(cacheProvider);
+
             _proxyGenerator = new ProxyGenerator();
             _conventions = new ConventionsFluentInterface(this);
         }
@@ -25,12 +27,13 @@ namespace Temporal.Core
         public RepositoryDecorator(ICacheInterceptor cacheInterceptor)
         {
             _proxyGenerator = new ProxyGenerator();
-            _cacheInterceptor = cacheInterceptor;
+            CacheInterceptor = cacheInterceptor;
+            
         }
 
         public T Decorate<T>(T target) where T : class
         {
-            var decoratedRepo = _proxyGenerator.CreateInterfaceProxyWithTarget(target, _cacheInterceptor);
+            var decoratedRepo = _proxyGenerator.CreateInterfaceProxyWithTarget(target, CacheInterceptor);
             return decoratedRepo;
         }
 
