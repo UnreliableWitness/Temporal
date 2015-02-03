@@ -4,22 +4,20 @@ using System.Linq;
 using System.Reflection;
 using Castle.DynamicProxy;
 using Temporal.Core.Attributes;
-using Temporal.Core.Conventions;
-using Temporal.Core.Conventions.CachingConventions;
+using Temporal.Core.Conventions.Caching;
 
-namespace Temporal.Core
+namespace Temporal.Core.Interpreters
 {
-    public class CacheAttributeInterpreter : ICacheAttributeInterpreter
+    public class ShouldCacheInterpreter : IShouldCacheInterpreter
     {
         private readonly Dictionary<MethodInfo, IEnumerable<CacheAttribute>> _cacheAttributes;
 
         public List<ICacheConvention> Conventions { get; set; }
 
-        public CacheAttributeInterpreter()
+        public ShouldCacheInterpreter()
         {
             Conventions = new List<ICacheConvention>();
             _cacheAttributes = new Dictionary<MethodInfo, IEnumerable<CacheAttribute>>();
-            
         }
 
         public bool UseCache(IInvocation invocation)

@@ -2,7 +2,8 @@
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Temporal.Core;
-using Temporal.Core.Conventions.CachingConventions;
+using Temporal.Core.Conventions.Caching;
+using Temporal.Core.Conventions.Invalidation;
 using Temporal.Core.Exceptions;
 using Temporal.Tests.Fakes;
 
@@ -66,7 +67,29 @@ namespace Temporal.Tests
         public void InvalidationConventionShouldBeAbleToBeConfigured()
         {
             var decorator = new RepositoryDecorator();
-            decorator.InvalidateOn.MethodInvocation().TimeElapsed().MaxCountReached(100);
+            decorator.InvalidateOn.MethodInvocation(new DefaultMethodInvalidationConvention());
+        }
+
+        [TestMethod]
+        public void ShouldInvalidateOnDefaultMethodInvalidationConvention()
+        {
+            var decorator = new RepositoryDecorator();
+            decorator.InvalidateOn.MethodInvocation(new DefaultMethodInvalidationConvention());
+
+            var repo = new TestRepository();
+            var decoRepo = decorator.Decorate<ITestRepository>(repo);
+            
+
+            var personsA = decoRepo.RetrievePersons();
+            var personsB = decoRepo.RetrievePersons();
+
+            Assert.AreEqual(personsA, personsB);
+
+            var person = personsA.FirstOrDefault();
+            decoRepo.UpdatePerson(person);
+
+            
+
         }
     }
 

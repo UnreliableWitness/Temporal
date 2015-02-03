@@ -10,5 +10,6 @@ namespace Temporal.Core
         event ItemEvictedEventHandler ItemEvicted;
         bool TryAdd(string key, object toCache, TimeSpan expiration);
         bool TryGet(string key, out object returnValue);
+        void InvalidateAll();
     }
 }

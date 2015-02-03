@@ -14,5 +14,6 @@ namespace Temporal.Tests.Fakes
         Person RetrievePerson(Person person);
         Person RetrievePerson(Person person, int i);
         IEnumerable<Person> SelectPersons();
+        byte[] UpdatePerson(Person person);
     }
 }

@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Castle.DynamicProxy;
+using Temporal.Core.Conventions.Invalidation;
 
 namespace Temporal.Core
 {
     public class CacheProvider : ICacheProvider
     {
         private readonly ICacheContainer _cacheContainer;
+
+        public InvalidationConfiguration InvalidationConfiguration { get; set; }
 
         public CacheProvider(ICacheContainer cacheContainer)
         {
@@ -18,7 +22,7 @@ namespace Temporal.Core
 
         }
 
-        public void Handle(IInvocation invocation)
+        public void HandleDataRequest(IInvocation invocation)
         {
             var returnType = invocation.Method.ReturnType;
             if (returnType != typeof (void))
@@ -48,6 +52,22 @@ namespace Temporal.Core
                         {
                             _cacheContainer.TryAdd(cacheKey, returnValue, TimeSpan.FromMinutes(10));
                         }
+                    }
+                }
+            }
+        }
+
+        public void HandleDataChange(IInvocation invocation)
+        {
+            if (InvalidationConfiguration.MethodInvalidation &&
+                InvalidationConfiguration.MethodInvalidationConventions.Any())
+            {
+                foreach (var methodInvalidationConvention in InvalidationConfiguration.MethodInvalidationConventions)
+                {
+                    if (methodInvalidationConvention.ShouldInvalidate(invocation.MethodInvocationTarget))
+                    {
+                        _cacheContainer.InvalidateAll();
+                        return;
                     }
                 }
             }

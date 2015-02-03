@@ -59,7 +59,6 @@ namespace Temporal.Tests.Fakes
             return result;
         }
 
-        [InvalidationSource()]
         public byte[] UpdatePerson(Person person)
         {
             return new byte[] {};

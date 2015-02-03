@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.Caching;
 using Temporal.Core.Events;
 
@@ -64,6 +65,15 @@ namespace Temporal.Core
             if (returnValue == null)
                 return false;
             return true;
+        }
+
+        public void InvalidateAll()
+        {
+            var allKeys = _cache.Select(o => o.Key);
+            foreach (var allKey in allKeys)
+            {
+                _cache.Remove(allKey);
+            }
         }
     }
 }

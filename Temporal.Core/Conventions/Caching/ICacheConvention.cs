@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Temporal.Core.Conventions.CachingConventions
+namespace Temporal.Core.Conventions.Caching
 {
     public interface ICacheConvention
     {

@@ -1,5 +1,6 @@
 ﻿using Castle.DynamicProxy;
-using Temporal.Core.Conventions.CachingConventions;
+using Temporal.Core.Conventions.Caching;
+using Temporal.Core.Conventions.Invalidation;
 using Temporal.Core.Interceptors;
 
 namespace Temporal.Tests.Fakes
@@ -20,5 +21,7 @@ namespace Temporal.Tests.Fakes
         {
             throw new System.NotImplementedException();
         }
+
+        public InvalidationConfiguration InvalidationConfiguration { get; set; }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using Castle.DynamicProxy;
-using Temporal.Core.Conventions;
-using Temporal.Core.Conventions.CachingConventions;
+using Temporal.Core.Conventions.Caching;
 
-namespace Temporal.Core
+namespace Temporal.Core.Interpreters
 {
-    public interface ICacheAttributeInterpreter
+    public interface IShouldCacheInterpreter
     {
         bool UseCache(IInvocation invocation);
 

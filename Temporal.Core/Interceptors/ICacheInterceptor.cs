@@ -1,6 +1,5 @@
 ﻿using Castle.DynamicProxy;
-using Temporal.Core.Conventions;
-using Temporal.Core.Conventions.CachingConventions;
+using Temporal.Core.Conventions.Caching;
 
 namespace Temporal.Core.Interceptors
 {

@@ -4,6 +4,7 @@ namespace Temporal.Core
 {
     public interface ICacheProvider
     {
-        void Handle(IInvocation invocation);
+        void HandleDataRequest(IInvocation invocation);
+        void HandleDataChange(IInvocation invocation);
     }
 }

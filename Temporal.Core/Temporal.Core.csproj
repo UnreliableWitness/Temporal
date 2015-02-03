@@ -44,20 +44,23 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\CacheAttribute.cs" />
-    <Compile Include="CacheAttributeInterpreter.cs" />
+    <Compile Include="Interpreters\ShouldCacheInterpreter.cs" />
     <Compile Include="Attributes\DontCacheAttribute.cs" />
-    <Compile Include="Conventions\InvalidationConventions\IInvalidateConvention.cs" />
-    <Compile Include="Conventions\InvalidationConventions\InvalidationConventionsFluentInterface.cs" />
-    <Compile Include="ICacheAttributeInterpreter.cs" />
+    <Compile Include="Conventions\Invalidation\DefaultMethodInvalidationConvention.cs" />
+    <Compile Include="Conventions\Invalidation\IInvalidationConvention.cs" />
+    <Compile Include="Conventions\Invalidation\IMethodInvalidationConvention.cs" />
+    <Compile Include="Conventions\Invalidation\InvalidationConfiguration.cs" />
+    <Compile Include="Conventions\Invalidation\InvalidationConventionsFluentInterface.cs" />
+    <Compile Include="Interpreters\IShouldCacheInterpreter.cs" />
     <Compile Include="Attributes\Invalidation\InvalidationAttribute.cs" />
     <Compile Include="Attributes\Invalidation\InvalidationSourceAttribute.cs" />
     <Compile Include="Attributes\Invalidation\InvalidationTargetAttribute.cs" />
     <Compile Include="CacheContainer.cs" />
     <Compile Include="CacheKeyGenerator.cs" />
     <Compile Include="CacheProvider.cs" />
-    <Compile Include="Conventions\CachingConventions\CachingConventionsFluentInterface.cs" />
-    <Compile Include="Conventions\CachingConventions\DefaultCachingConvention.cs" />
-    <Compile Include="Conventions\CachingConventions\ICacheConvention.cs" />
+    <Compile Include="Conventions\Caching\CachingConventionsFluentInterface.cs" />
+    <Compile Include="Conventions\Caching\DefaultCachingConvention.cs" />
+    <Compile Include="Conventions\Caching\ICacheConvention.cs" />
     <Compile Include="Exceptions\ConventionAlreadyRegisteredException.cs" />
     <Compile Include="ICacheContainer.cs" />
     <Compile Include="ICacheProvider.cs" />

@@ -1,4 +1,4 @@
-﻿namespace Temporal.Core.Conventions.CachingConventions
+﻿namespace Temporal.Core.Conventions.Caching
 {
     public sealed class CachingConventionsFluentInterface
     {
