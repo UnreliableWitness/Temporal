@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.Caching;
 using Temporal.Core.Events;
 
@@ -25,7 +24,7 @@ namespace Temporal.Core
             _cache = MemoryCache.Default;
         }
 
-        public bool TryAdd(string key, object toCache, TimeSpan expiration)
+        public bool TryAdd(string key, object toCache, CacheItemPolicy cacheItemPolicy)
         {
             if (string.IsNullOrEmpty(key) || toCache == null)
                 return false;
@@ -37,15 +36,7 @@ namespace Temporal.Core
                 return true;
             }
 
-            var cachePolicy = new CacheItemPolicy();
-            cachePolicy.SlidingExpiration = expiration;
-            cachePolicy.RemovedCallback = arguments =>
-            {
-                if (ItemEvicted != null)
-                    ItemEvicted(this, new ItemEvictedEventArgs {CacheKey = key});
-            };
-
-            _cache.Add(key, toCache, cachePolicy);
+            _cache.Add(key, toCache, cacheItemPolicy);
 
             if (ItemAdded != null)
                 ItemAdded(this, new ItemAddedEventArgs {CacheKey = key});

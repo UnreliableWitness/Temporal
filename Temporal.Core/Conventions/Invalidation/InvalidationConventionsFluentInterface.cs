@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Caching;
 
 namespace Temporal.Core.Conventions.Invalidation
 {
@@ -8,8 +10,11 @@ namespace Temporal.Core.Conventions.Invalidation
 
         public InvalidationConventionsFluentInterface(RepositoryDecorator repositoryDecorator)
         {
+            var defaultCacheItemPolicy = new CacheItemPolicy();
+            defaultCacheItemPolicy.SlidingExpiration = TimeSpan.FromMinutes(10);
+
             _repositoryDecorator = repositoryDecorator;
-            _repositoryDecorator.CacheProvider.InvalidationConfiguration = new InvalidationConfiguration();
+            _repositoryDecorator.CacheProvider.InvalidationConfiguration = new InvalidationConfiguration(defaultCacheItemPolicy);
         }
 
         public InvalidationConventionsFluentInterface MethodInvocation(IEnumerable<IMethodInvalidationConvention> invalidateConventions)
@@ -24,6 +29,25 @@ namespace Temporal.Core.Conventions.Invalidation
             return MethodInvocation(new[] {invalidateConvention});
         }
 
+        public InvalidationConventionsFluentInterface CacheItemPolicySliding(TimeSpan expireAfter)
+        {
+            var slidingPolicy = new CacheItemPolicy
+            {
+                SlidingExpiration = expireAfter
+            };
+            _repositoryDecorator.CacheProvider.InvalidationConfiguration.CacheItemPolicy = slidingPolicy;
+            return this;
+        }
+
+        public InvalidationConventionsFluentInterface CacheItemPolicyAbsolute(DateTimeOffset offset)
+        {
+            var absoluteExpiryPolicy = new CacheItemPolicy
+            {
+                AbsoluteExpiration = offset
+            };
+            _repositoryDecorator.CacheProvider.InvalidationConfiguration.CacheItemPolicy = absoluteExpiryPolicy;
+            return this;
+        }
 
         public InvalidationConventionsFluentInterface TimeElapsed()
         {
@@ -35,4 +59,6 @@ namespace Temporal.Core.Conventions.Invalidation
             return this;
         }
     }
+
+
 }

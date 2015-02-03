@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Runtime.Caching;
 
 namespace Temporal.Core
 {
@@ -8,7 +8,7 @@ namespace Temporal.Core
         event ItemAddedEventHandler ItemAdded;
         event ItemUpdatedEventHandler ItemUpdated;
         event ItemEvictedEventHandler ItemEvicted;
-        bool TryAdd(string key, object toCache, TimeSpan expiration);
+        bool TryAdd(string key, object toCache, CacheItemPolicy cacheItemPolicy);
         bool TryGet(string key, out object returnValue);
         void InvalidateAll();
     }

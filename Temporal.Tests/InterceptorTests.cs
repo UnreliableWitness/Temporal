@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Temporal.Core;
 using Temporal.Core.Conventions.Caching;
@@ -87,9 +89,41 @@ namespace Temporal.Tests
 
             var person = personsA.FirstOrDefault();
             decoRepo.UpdatePerson(person);
+        }
 
-            
+        [TestMethod]
+        public void ChangeCacheItemPolicyShouldNotThrowException()
+        {
+            var decorator = new RepositoryDecorator();
+            decorator.InvalidateOn.CacheItemPolicySliding(TimeSpan.FromSeconds(1));
 
+            var decoRepo = decorator.Decorate<ITestRepository>(new TestRepository());
+
+            var personsA = decoRepo.RetrievePersons();
+            Thread.Sleep(1000);
+            var personsB = decoRepo.RetrievePersons();
+
+            Assert.AreNotEqual(personsA, personsB);
+        }
+
+        [TestMethod]
+        public void SlidingCachePolicyIsActuallySliding()
+        {
+            var decorator = new RepositoryDecorator();
+            decorator.InvalidateOn.CacheItemPolicySliding(TimeSpan.FromSeconds(1));
+
+            var decoRepo = decorator.Decorate<ITestRepository>(new TestRepository());
+
+            var personsA = decoRepo.RetrievePersons();
+            Thread.Sleep(500);
+            var personsB = decoRepo.RetrievePersons();
+
+            Assert.AreEqual(personsA, personsB);
+
+            Thread.Sleep(1000);
+            personsB = decoRepo.RetrievePersons();
+
+            Assert.AreNotEqual(personsA, personsB);
         }
     }
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.Caching;
 
 namespace Temporal.Core.Conventions.Invalidation
 {
@@ -8,8 +9,11 @@ namespace Temporal.Core.Conventions.Invalidation
 
         public List<IMethodInvalidationConvention> MethodInvalidationConventions { get; set; }
 
-        public InvalidationConfiguration()
+        public CacheItemPolicy CacheItemPolicy { get; set; }
+
+        public InvalidationConfiguration(CacheItemPolicy cacheItemPolicy)
         {
+            CacheItemPolicy = cacheItemPolicy;
             MethodInvalidationConventions = new List<IMethodInvalidationConvention>();
         }
     }

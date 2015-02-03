@@ -45,12 +45,12 @@ namespace Temporal.Core
                             var task = (Task) returnValue;
                             task.ContinueWith(_ =>
                             {
-                                _cacheContainer.TryAdd(cacheKey, returnValue, TimeSpan.FromMinutes(10));
+                                _cacheContainer.TryAdd(cacheKey, returnValue, InvalidationConfiguration.CacheItemPolicy);
                             });
                         }
                         else
                         {
-                            _cacheContainer.TryAdd(cacheKey, returnValue, TimeSpan.FromMinutes(10));
+                            _cacheContainer.TryAdd(cacheKey, returnValue, InvalidationConfiguration.CacheItemPolicy);
                         }
                     }
                 }
