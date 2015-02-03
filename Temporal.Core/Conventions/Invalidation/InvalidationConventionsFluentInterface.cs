@@ -49,13 +49,9 @@ namespace Temporal.Core.Conventions.Invalidation
             return this;
         }
 
-        public InvalidationConventionsFluentInterface TimeElapsed()
-        {
-            return this;
-        }
-
         public InvalidationConventionsFluentInterface MaxCountReached(int max)
         {
+            _repositoryDecorator.CacheProvider.InvalidationConfiguration.MaxCount = max;
             return this;
         }
     }

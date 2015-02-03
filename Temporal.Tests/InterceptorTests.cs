@@ -125,6 +125,65 @@ namespace Temporal.Tests
 
             Assert.AreNotEqual(personsA, personsB);
         }
+
+        [TestMethod]
+        public void AbsoluteExpirationExpiredShouldNotBeEqual()
+        {
+            var decorator = new RepositoryDecorator();
+            decorator.InvalidateOn.CacheItemPolicyAbsolute(new DateTimeOffset(DateTime.Now.AddSeconds(1)));
+
+            var decoRepo = decorator.Decorate<ITestRepository>(new TestRepository());
+
+            var personsA = decoRepo.RetrievePersons();
+            Thread.Sleep(1000);
+            var personsB = decoRepo.RetrievePersons();
+
+            Assert.AreNotEqual(personsA, personsB);
+        }
+
+        [TestMethod]
+        public void AbsoluteExpirationNotExpiredShouldBeEqual()
+        {
+            var decorator = new RepositoryDecorator();
+            decorator.InvalidateOn.CacheItemPolicyAbsolute(new DateTimeOffset(DateTime.Now.AddSeconds(1)));
+
+            var decoRepo = decorator.Decorate<ITestRepository>(new TestRepository());
+
+            var personsA = decoRepo.RetrievePersons();
+            var personsB = decoRepo.RetrievePersons();
+
+            Assert.AreEqual(personsA, personsB);
+        }
+
+        [TestMethod]
+        public void MethodInvocationShouldInvalidateEvenWhenCacheItemPolicyIsntTriggered()
+        {
+            var decorator = new RepositoryDecorator();
+            decorator.InvalidateOn.CacheItemPolicySliding(TimeSpan.FromSeconds(5)).MethodInvocation(new DefaultMethodInvalidationConvention());
+
+            var decoRepo = decorator.Decorate<ITestRepository>(new TestRepository());
+
+            var personsA = decoRepo.RetrievePersons();
+            decoRepo.UpdatePerson(personsA.First());
+            var personsB = decoRepo.RetrievePersons();
+
+            Assert.AreNotEqual(personsA, personsB);
+        }
+
+        [TestMethod]
+        public void MaxCountShouldTriggerInvalidation()
+        {
+            var decorator = new RepositoryDecorator();
+            decorator.InvalidateOn.MaxCountReached(5);
+
+            var decoRepo = decorator.Decorate<ITestRepository>(new TestRepository());
+
+            var a = decoRepo.RetrievePerson(1);
+            var b = decoRepo.RetrievePerson(2);
+            var c = decoRepo.RetrievePerson(3);
+            var d = decoRepo.RetrievePerson(4);
+            var e = decoRepo.RetrievePerson(5);
+        }
     }
 
     public class TestConvention : ICacheConvention

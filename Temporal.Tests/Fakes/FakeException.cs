@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Temporal.Tests.Fakes
 {
+    [Serializable]
     public class FakeException : Exception
     {
         public override string Message

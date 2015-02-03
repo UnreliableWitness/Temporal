@@ -9,6 +9,8 @@ namespace Temporal.Core.Conventions.Invalidation
 
         public List<IMethodInvalidationConvention> MethodInvalidationConventions { get; set; }
 
+        public int MaxCount { get; set; }
+
         public CacheItemPolicy CacheItemPolicy { get; set; }
 
         public InvalidationConfiguration(CacheItemPolicy cacheItemPolicy)
