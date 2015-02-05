@@ -171,19 +171,39 @@ namespace Temporal.Tests
         }
 
         [TestMethod]
-        public void MaxCountShouldTriggerInvalidation()
+        public void RepositoriesDecoratedBySameDecoratorShouldHaveSharedCache()
         {
             var decorator = new RepositoryDecorator();
-            decorator.InvalidateOn.MaxCountReached(5);
+            decorator.InvalidateOn.CacheItemPolicySliding(TimeSpan.FromMinutes(5));
 
-            var decoRepo = decorator.Decorate<ITestRepository>(new TestRepository());
+            var repoA = decorator.Decorate<ITestRepository>(new TestRepository());
+            var repoB = decorator.Decorate<ITestRepository>(new TestRepository());
 
-            var a = decoRepo.RetrievePerson(1);
-            var b = decoRepo.RetrievePerson(2);
-            var c = decoRepo.RetrievePerson(3);
-            var d = decoRepo.RetrievePerson(4);
-            var e = decoRepo.RetrievePerson(5);
+            var repoAResults = repoA.RetrievePersons();
+            var repoBResults = repoB.RetrievePersons();
+
+            Assert.AreSame(repoAResults.First(), repoBResults.First());
         }
+
+        [TestMethod]
+        public void RepositoriesDecoratedByDifferentDecoratorShouldHaveSharedCache()
+        {
+            var decoratorA = new RepositoryDecorator();
+            decoratorA.InvalidateOn.CacheItemPolicySliding(TimeSpan.FromMinutes(5));
+
+            var repoA = decoratorA.Decorate<ITestRepository>(new TestRepository());
+
+            var decoratorB = new RepositoryDecorator();
+            decoratorB.InvalidateOn.CacheItemPolicySliding(TimeSpan.FromMinutes(5));
+            var repoB = decoratorB.Decorate<ITestRepository>(new TestRepository());
+
+            var repoAResults = repoA.RetrievePersons();
+            var repoBResults = repoB.RetrievePersons();
+
+            Assert.AreSame(repoAResults.First(), repoBResults.First());
+        }
+
+
     }
 
     public class TestConvention : ICacheConvention
