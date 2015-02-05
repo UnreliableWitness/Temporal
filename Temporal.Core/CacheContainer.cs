@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Runtime.Caching;
 using Temporal.Core.Events;
 
@@ -10,6 +11,7 @@ namespace Temporal.Core
 
     public class CacheContainer : ICacheContainer
     {
+        private readonly object _mutex = new object();
         private readonly ObjectCache _cache;
 
         public CacheKeyGenerator CacheKeyGenerator { get; private set; }
@@ -26,21 +28,23 @@ namespace Temporal.Core
 
         public bool TryAdd(string key, object toCache, CacheItemPolicy cacheItemPolicy)
         {
-            if (string.IsNullOrEmpty(key) || toCache == null)
-                return false;
-            if (_cache[key] != null)
-            {
-                _cache[key] = toCache;
-                if (ItemUpdated != null)
-                    ItemUpdated(this, new ItemUpdatedEventArgs {CacheKey = key});
-                return true;
+            lock(_mutex)
+            { 
+                if (string.IsNullOrEmpty(key) || toCache == null)
+                    return false;
+                if (_cache[key] != null)
+                {
+                    _cache[key] = toCache;
+                    if (ItemUpdated != null)
+                        ItemUpdated(this, new ItemUpdatedEventArgs {CacheKey = key});
+                    return true;
+                }
+
+                _cache.Add(key, toCache, cacheItemPolicy);
+
+                if (ItemAdded != null)
+                    ItemAdded(this, new ItemAddedEventArgs {CacheKey = key});
             }
-
-            _cache.Add(key, toCache, cacheItemPolicy);
-
-            if (ItemAdded != null)
-                ItemAdded(this, new ItemAddedEventArgs {CacheKey = key});
-
             return true;
         }
 

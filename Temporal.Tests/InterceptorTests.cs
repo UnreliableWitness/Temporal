@@ -1,13 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Temporal.Core;
 using Temporal.Core.Conventions.Caching;
 using Temporal.Core.Conventions.Invalidation;
 using Temporal.Core.Exceptions;
 using Temporal.Tests.Fakes;
+using Temporal.Tests.Mocks;
 
 namespace Temporal.Tests
 {
@@ -203,7 +207,50 @@ namespace Temporal.Tests
             Assert.AreSame(repoAResults.First(), repoBResults.First());
         }
 
+        [TestMethod]
+        public void MultiThreadedCacheReadShouldYieldConsistentResults()
+        {
+            var decorator = new RepositoryDecorator();
+            var repository = decorator.Decorate<ITestRepository>(new TestRepository());
+            
+            var taskList = new List<Task>();
+            var resultList = new List<Person>();
+            for (int i = 0; i < 1000; i++)
+            {
+                taskList.Add(Task.Run(async () =>
+                {
+                    //Debug.WriteLine(Task.CurrentId);
+                    var people = (await repository.RetrievePersonsAsync());
+                    resultList.Add(people.Single());
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                }));
+            }
 
+            Task.WaitAll(taskList.ToArray());
+
+            Debug.WriteLine("{0} items in the result list",taskList.Count);
+
+            Assert.AreEqual(resultList.Count, 1000);
+        }
+
+        [TestMethod]
+        public void MultiThreadedCacheWriteShouldNotFail()
+        {
+            var decorator = new RepositoryDecorator();
+            var repository = decorator.Decorate<ITestRepository>(new TestRepository());
+
+            var taskList = new List<Task>();
+            var resultList = new List<Person>();
+
+            for (int i = 0; i < 1000; i++)
+            {
+                taskList.Add(Task.Run(() =>
+                {
+                     resultList.Add(repository.RetrievePerson(i));
+                }));
+            }
+
+        }
     }
 
     public class TestConvention : ICacheConvention

@@ -32,7 +32,8 @@ namespace Temporal.Tests.Fakes
         {
             return new Person
             {
-                First = "Dries"
+                Id = id,
+                First = "Dries" + id
             };
         }
 

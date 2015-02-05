@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -10,14 +11,14 @@ namespace Temporal.Core.Interpreters
 {
     public class ShouldCacheInterpreter : IShouldCacheInterpreter
     {
-        private readonly Dictionary<MethodInfo, IEnumerable<CacheAttribute>> _cacheAttributes;
+        private readonly ConcurrentDictionary<MethodInfo, IEnumerable<CacheAttribute>> _cacheAttributes;
 
         public List<ICacheConvention> Conventions { get; set; }
 
         public ShouldCacheInterpreter()
         {
             Conventions = new List<ICacheConvention>();
-            _cacheAttributes = new Dictionary<MethodInfo, IEnumerable<CacheAttribute>>();
+            _cacheAttributes = new ConcurrentDictionary<MethodInfo, IEnumerable<CacheAttribute>>();
         }
 
         public bool UseCache(IInvocation invocation)
@@ -63,9 +64,13 @@ namespace Temporal.Core.Interpreters
                 return _cacheAttributes[method];
 
 
-            var attributes = Attribute.GetCustomAttributes(method, typeof(CacheAttribute), true); //method.GetCustomAttributes(typeof(CacheAttribute), true);
-            _cacheAttributes.Add(method, attributes as CacheAttribute[]);
-            return attributes as CacheAttribute[];
+            var attributes = Attribute.GetCustomAttributes(method, typeof(CacheAttribute), true) as CacheAttribute[]; //method.GetCustomAttributes(typeof(CacheAttribute), true);
+            _cacheAttributes.AddOrUpdate(method, attributes, (info, enumerable) =>
+            {
+                enumerable = attributes;
+                return enumerable;
+            });
+            return attributes;
         }
     }
 }
