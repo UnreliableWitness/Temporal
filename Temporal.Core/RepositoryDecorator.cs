@@ -1,12 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using Castle.DynamicProxy;
+﻿using Castle.DynamicProxy;
 using Temporal.Core.Conventions.Caching;
 using Temporal.Core.Conventions.Invalidation;
 using Temporal.Core.Interceptors;
 
 namespace Temporal.Core
 {
-    public sealed class RepositoryDecorator
+    public sealed class RepositoryDecorator : IRepositoryDecorator
     {
         private readonly ProxyGenerator _proxyGenerator;
         internal ICacheInterceptor CacheInterceptor { get; set; }
@@ -38,11 +37,9 @@ namespace Temporal.Core
 
         public T Decorate<T>(T target) where T : class
         {
-            var decoratedRepo = _proxyGenerator.CreateInterfaceProxyWithTarget(target, CacheInterceptor);
-            return decoratedRepo;
+            target = _proxyGenerator.CreateInterfaceProxyWithTarget(target, CacheInterceptor);
+            return target;
         }
-
-        
     }
 
 

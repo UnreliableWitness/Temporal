@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using System.Collections.Generic;
+using Caliburn.Micro;
 
 namespace Temporal.Wpf.Models
 {
@@ -39,6 +40,13 @@ namespace Temporal.Wpf.Models
                 _last = value;
                 NotifyOfPropertyChange(() => Last);
             }
+        }
+
+        public List<Address> Addresses { get; set; }
+
+        public Person()
+        {
+            Addresses = new List<Address>();
         }
     }
 }

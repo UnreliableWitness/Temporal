@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Windows;
 using Caliburn.Micro;
 using Ninject;
+using Temporal.Core;
+using Temporal.Wpf.Repositories;
 using Temporal.Wpf.ViewModels;
 
 namespace Temporal.Wpf
@@ -17,7 +19,8 @@ namespace Temporal.Wpf
 
             _kernel.Bind<IWindowManager>().To<WindowManager>().InSingletonScope();
             _kernel.Bind<IEventAggregator>().To<EventAggregator>().InSingletonScope();
-
+            _kernel.Bind<IPersonRepository>().To<PersonRepository>().InTransientScope();
+            _kernel.Bind<IRepositoryDecorator>().To<RepositoryDecorator>().InTransientScope();
         }
 
         public Bootstrapper()

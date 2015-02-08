@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Temporal.Wpf.Models;
 
 namespace Temporal.Wpf.Repositories
 {
-    public class PersonRepository
+    public class PersonRepository : IPersonRepository
     {
         private IEnumerable<Person> _persons; 
 
@@ -21,7 +22,8 @@ namespace Temporal.Wpf.Repositories
             {
                 Id = 1,
                 First = "John",
-                Last = "Doe"
+                Last = "Doe",
+                Addresses = new List<Address>(new []{new Address{City = "Oudenaarde", Street = "Markt"}})
             });
             list.Add(new Person
             {
@@ -35,6 +37,7 @@ namespace Temporal.Wpf.Repositories
 
         public IEnumerable<Person> RetrievePersons()
         {
+            Thread.Sleep(2000);
             return _persons;
         }
 

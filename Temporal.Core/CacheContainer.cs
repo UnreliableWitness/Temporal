@@ -34,7 +34,7 @@ namespace Temporal.Core
                     return false;
                 if (_cache[key] != null)
                 {
-                    _cache[key] = toCache;
+                    _cache.Set(key, toCache, cacheItemPolicy);
                     if (ItemUpdated != null)
                         ItemUpdated(this, new ItemUpdatedEventArgs {CacheKey = key});
                     return true;
